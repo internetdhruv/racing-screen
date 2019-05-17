@@ -16,9 +16,10 @@
 #include "lv_drivers/indev/mouse.h"
 #include "lv_drivers/indev/mousewheel.h"
 #include "lv_drivers/indev/keyboard.h"
-#include "lv_examples/lv_apps/demo/demo.h"
-#include "lv_examples/lv_apps/benchmark/benchmark.h"
-#include "lv_examples/lv_tests/lv_test.h"
+
+#include "BRacing/screen_tools.h"
+#include "BRacing/tester.h"
+
 
 /*********************
  *      DEFINES
@@ -47,9 +48,7 @@ static void memory_monitor(void * param);
  *  STATIC VARIABLES
  **********************/
 
-/**********************
- *      MACROS
- **********************/
+
 
 /**********************
  *   GLOBAL FUNCTIONS
@@ -57,33 +56,39 @@ static void memory_monitor(void * param);
 
 int main(int argc, char ** argv)
 {
+
     (void) argc;    /*Unused*/
     (void) argv;    /*Unused*/
 
-    /*Initialize LittlevGL*/
-    lv_init();
 
+
+
+
+
+    /*Initialize LittlevGL*/
     /*Initialize the HAL (display, input devices, tick) for LittlevGL*/
+    lv_init();
     hal_init();
 
-    /*Load a demo*/
-    demo_create();
+    //test();
 
-    /*Try the benchmark to see how fast your GUI is*/
-//    benchmark_create();
+    screen_tools_init();
 
-    /*Check the themes too*/
-//    lv_test_theme_1(lv_theme_night_init(15, NULL));
 
-    /* A keyboard and encoder (mouse wheel) control example*/
-//    lv_test_group_1();
+    uint8_t v[MAX_NUMBER_OF_ELEMENTS];
+    char labels[MAX_NUMBER_OF_ELEMENTS][MAX_LABEL_LENGTH];
 
     while(1) {
+
+    	v[0] = random() % 10000;
+    	strcpy(labels[0],"RPM");
+    	display(1, v, labels);
+
         /* Periodically call the lv_task handler.
          * It could be done in a timer interrupt or an OS task too.*/
         lv_task_handler();
 
-        usleep(5 * 1000);       /*Just to let the system breath*/
+        usleep(5 * 10000);       /*Just to let the system breath*/
 
         #ifdef SDL_APPLE
             SDL_Event event;
@@ -102,6 +107,10 @@ int main(int argc, char ** argv)
                 #endif
             }
         #endif
+
+//            v[0] = random() % 10000;
+//                	strcpy(labels[0],"RPM");
+//                	display(1, v, labels);
 
     }
 
